@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>硫磺装置工艺技术比武考试题库</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .question-type-selector {
+            margin-bottom: 30px;
+        }
+        .question-type-selector h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .question-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .question-type-btn {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .question-type-btn:hover {
+            background-color: #2980b9;
+        }
+        .question-container {
+            display: none;
+            margin-top: 20px;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .question-number {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .question-content {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .options {
+            margin-bottom: 20px;
+        }
+        .option {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option:hover {
+            background-color: #e9e9e9;
+        }
+        .option.selected {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .answer-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .correct {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .score-container {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #3498db;
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>硫磺装置工艺技术比武考试题库</h1>
+
+    <div class="question-type-selector">
+        <h2>请选择题型：</h2>
+        <div class="question-types">
+            <button class="question-type-btn" data-type="fill">填空题</button>
+            <button class="question-type-btn" data-type="single">单选题</button>
+            <button class="question-type-btn" data-type="multiple">多选题</button>
+            <button class="question-type-btn" data-type="judge">判断题</button>
+            <button class="question-type-btn" data-type="short">简答题</button>
+            <button class="question-type-btn" data-type="essay">论述题</button>
+        </div>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="question-container" id="question-container">
+        <div class="question-header">
+            <div class="question-number" id="question-number">题目 1/10</div>
+            <div class="question-type" id="question-type">填空题</div>
+        </div>
+        <div class="question-content" id="question-content"></div>
+        <div class="options" id="options"></div>
+        <div id="answer-input-container">
+            <input type="text" class="answer-input" id="answer-input" placeholder="请输入答案">
+        </div>
+        <div class="btn-container">
+            <button class="btn" id="prev-btn" disabled>上一题</button>
+            <button class="btn" id="submit-btn">提交答案</button>
+            <button class="btn" id="next-btn" style="display:none;">下一题</button>
+        </div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <div class="score-container" id="score-container">
+        得分: <span id="score">0</span> / <span id="total">0</span>
+    </div>
+</div>
+
+<script>
+    // 题库数据
+    const questionBank = {
+        fill: [
+            {
+                question: "硫磺在150℃时呈 ______ 颜色。",
+                answer: "暗棕红色"
+            },
+            {
+                question: "硫磺优等品的含硫量要求是 ______。",
+                answer: "99.95%"
+            },
+            {
+                question: "急冷水注氨的目的是 ______。",
+                answer: "提高急冷水PH值"
+            },
+            {
+                question: "硫横装置液硫管线最常用的伴热方式是 ______。",
+                answer: "夹套伴热"
+            },
+            {
+                question: "空气冷却器的换热管安装翅片可以 ______ 换热管两侧的传热效果。",
+                answer: "提高"
+            },
+            {
+                question: "瓦斯进炉前需做含氧量分析，含氧量≤ ______ 为合格。",
+                answer: "0.5%"
+            },
+            {
+                question: "蒸汽发生器的给水为 ______ 水。",
+                answer: "除氧"
+            },
+            {
+                question: "硫磺酸性气原料来自溶剂再生和 ______ 装置。",
+                answer: "酸性水汽提"
+            },
+            {
+                question: "一般情况下，溶剂再生装置的酸性气中硫化氢含量比酸性水汽提装置的酸性气要 ______（填'高'或'低'）。",
+                answer: "高"
+            },
+            {
+                question: "硫磺回收装置规模为 ______ 万吨/年。",
+                answer: "12"
+            }
+        ],
+        single: [
+            {
+                question: "离心泵主要依靠叶轮的高速旋转产生（ ）使液体提高压力而径向流出叶轮。",
+                options: ["A.离心力", "B.离心力和轴向力", "C.轴向力", "D.切向力"],
+                answer: "A"
+            },
+            {
+                question: "液体黏度越小，需要离心泵的轴功率（ ），而与叶轮摩擦产生温度越低。",
+                options: ["A.越大", "B.越小", "C.不变", "D.不能确定"],
+                answer: "B"
+            },
+            {
+                question: "下列换热器中不是通过管壁传热的换热器是（ ）。",
+                options: ["A.浮头式固定管板式", "B.固定管板式", "C.U型管式", "D.板式"],
+                answer: "D"
+            },
+            {
+                question: "一般使用于高温高压下的换热器是（ ）。",
+                options: ["A.浮头式固定管板式", "B.固定管板式", "C.U型管式", "D.板式"],
+                answer: "C"
+            },
+            {
+                question: "在石化生产装置中广泛使用的安全阀是（ ）。",
+                options: ["A.杠杆式", "B.弹簧式", "C.脉冲式", "D.重锤式"],
+                answer: "B"
+            },
+            {
+                question: "对于工作介质为有毒、易燃气体的容器，应选用（ ）。",
+                options: ["A.全封闭式安全阀", "B.半封闭式安全阀", "C.敞开式安全阀", "D.杠杆式安全阀"],
+                answer: "A"
+            },
+            {
+                question: "一次性使用的泄放装置是（ ）。",
+                options: ["A.安全阀", "B.爆破片", "C.单向阀", "D.自动阀"],
+                answer: "B"
+            },
+            {
+                question: "具有密封性能好，泄压反应较快，气体内所含的污物对其影响较小等特点的安全泄放装置的是（ ）。",
+                options: ["A.安全阀", "B.爆破片", "C.单向阀", "D.自动阀"],
+                answer: "B"
+            },
+            {
+                question: "不属于常用管道组成件的是（ ）。",
+                options: ["A.三通", "B.弯头", "C.异径管", "D.回弯头"],
+                answer: "D"
+            },
+            {
+                question: "不常用的钢制异径管有（ ）。",
+                options: ["A.无缝异径管", "B.高低压异径管", "C.焊制异径管", "D.铸造异径管"],
+                answer: "D"
+            }
+        ],
+        multiple: [
+            {
+                question: "尘毒物质对人体的危害与工作环境的( )等条件有关。",
+                options: ["A．温度", "B．湿度", "C．气压", "D．高度"],
+                answer: ["A", "B", "C"]
+            },
+            {
+                question: "着火点较大时，有利于灭火措施的是( )。",
+                options: ["A．抑制反应量", "B．用衣服、扫帚等扑打着火点", "C．减少可燃物浓度", "D．减少氧气浓度"],
+                answer: ["A", "C", "D"]
+            },
+            {
+                question: "改革生产工艺是控制化工污染的主要方法，包括( )等。",
+                options: ["A．改革工艺", "B．改变流程", "C．选用新型催化剂", "D．更新设备"],
+                answer: ["A", "B", "C"]
+            },
+            {
+                question: "产品的质量特性包括( )。",
+                options: ["A．性能", "B．寿命", "C．可靠性", "D．安全性"],
+                answer: ["A", "B", "C", "D"]
+            },
+            {
+                question: "关于可逆反应说法正确的是( )。",
+                options: ["A．在同一条件下，既能向正反应方向进行，同时又能向逆反应方向进行的反应，叫可逆反应", "B．所有的反应都是可逆的", "C．有气体参加的反应或有气体生成的反应，一定要在密闭体系的条件下才能是反应", "D．可逆反应中正反应和逆反应是相对的"],
+                answer: ["A", "C", "D"]
+            },
+            {
+                question: "在石油含氧化合物中，( )含量通常不超过含氧化合物总量的10％。",
+                options: ["A．脂肪酸", "B．环烷酸", "C．酚类", "D．中性含氧化合物"],
+                answer: ["A", "C", "D"]
+            },
+            {
+                question: "与物质的质量热容大小有关的有( )。",
+                options: ["A．物质的量", "B．温度高低", "C．压力高低", "D．体积变化"],
+                answer: ["B", "C", "D"]
+            },
+            {
+                question: "热负荷与下列( )有关。",
+                options: ["A．流体的流量", "B．流体的平均比热容", "C．流体的流速", "D．流体传热前后的温差"],
+                answer: ["A", "B", "D"]
+            },
+            {
+                question: "传质的基本方式是( )。",
+                options: ["A．热传质", "B．涡流扩散", "C．对流传质", "D．扩散传质"],
+                answer: ["C", "D"]
+            },
+            {
+                question: "蜗壳离心泵径向合力的平衡方法是( )。",
+                options: ["A．导叶加蜗室结构", "B．双层蜗壳结构", "C．设置止推轴承", "D．双蜗室结构"],
+                answer: ["A", "B", "D"]
+            }
+        ],
+        judge: [
+            {
+                question: "常压汽提工艺技术特点：氨和硫化氢同一塔不分离。",
+                answer: "正确"
+            },
+            {
+                question: "由于硫冷凝器冷却水使用的是蒸汽冷凝水，因此不须定期排污。",
+                answer: "错误"
+            },
+            {
+                question: "硫化氢是有臭鸡蛋气味的无色气体。",
+                answer: "正确"
+            },
+            {
+                question: "在炼油厂，硫化氢主要来源于加氢脱硫装置。",
+                answer: "正确"
+            },
+            {
+                question: "硫化氢易溶于水和乙醇、汽油、煤油、原油。",
+                answer: "正确"
+            },
+            {
+                question: "硫化氢溶于水后生成硫酸、化学性质不稳定。",
+                answer: "错误"
+            },
+            {
+                question: "酸性气带水进燃烧炉，只影响炉子温度，而与转化率无关。",
+                answer: "错误"
+            },
+            {
+                question: "提高操作温度或降低操作压力有利于提高净化质量。",
+                answer: "正确"
+            },
+            {
+                question: "酸性水汽提的目的就是通过汽提和精制，脱出污水中的氨氮和硫化物，使排放的净化水达到排放要求。",
+                answer: "正确"
+            },
+            {
+                question: "硫化氢和二氧化硫的水溶液均呈酸性，它们对金属的腐蚀程度相当。",
+                answer: "错误"
+            }
+        ],
+        short: [
+            {
+                question: "酸性气进炉前为什么要脱水？（目的，危害）",
+                answer: "(1) 水带进炉后，会降低炉温，甚至熄火，影响炉子寿命。(2) 水进炉后产生大量蒸汽，增加系统压力，严重时，造成炉子爆炸。(3) 水蒸汽增多，影响硫化氢的转化率。(4) 增加设各和管线的腐蚀。(5) 影响催化剂的活性和寿命。"
+            },
+            {
+                question: "克劳斯反应器床层温度为什么会高于入口温度?（反应种类）",
+                answer: "因为硫化氢与二氧化硫的反应为放热反应，在催化剂的作用下，硫化氢与二氧化硫的反应绝大部分是在床层上进行的，产生的热量不可能全部及时地带走，所以床层的温度就会提高。"
+            },
+            {
+                question: "常用的制硫工艺方法有哪几种?分别在什么情况下使用？（制硫工艺分类）",
+                answer: "部分燃烧法，分流法，直接氧化法。(1) 酸性气中的H2S浓度低于15%时，一般采用直接氧化法。(2) 酸性气中H2S浓度在15-50%之间时，一般采用分硫法。(3) 酸性气中H2S含量大于50%时，一般采用部分燃烧法。"
+            },
+            {
+                question: "清洁酸性气为何要分两路进制硫炉？（原因分析）",
+                answer: "清洁酸性气一路从制硫炉炉头进入，一路从制硫炉中部进入，目的是为了提高制硫炉的温度，充分烧氨。减少制硫炉前部的酸性气量，在风量不变的情况下形成过氧燃烧，炉膛温度自然就提高了。"
+            },
+            {
+                question: "酸性气组成变化时对操作过程有何影响？",
+                answer: "(1) 酸性气带烃过多时，如配风不够，催化剂结焦，严重时造成装置停工。(2) 酸性气带水严重时，系统压力升高，收率下降。(3) 酸性气带氨严重时，燃烧炉分解不完全在后路形成胺盐堵塞设备.管线。(4) 酸性气含硫化氢低时，降低硫的回收率。"
+            },
+            {
+                question: "富液闪蒸的目的是什么?",
+                answer: "(1) MDEA溶液在吸收循环氢.干气.液化气中H2S的同时，也会吸收部分烃类。这些烃类随富液进入溶剂再生塔，此时烃类也会与H2S一起从再生塔顶出来去硫磺回收装置制硫，而烃类在燃烧炉内将被烧成碳黑夹带在硫磺里使硫磺的颜色变黑，影响硫磺的品质。(2) 另外部分烃类的存在也会导致胺液发泡.脱硫塔或再生塔发生冲塔现象，严重影响装置的正常生产。因此必须将富胺液进溶剂再生塔前先进入富液闪蒸罐将烃类闪蒸出来，使溶剂再生塔中的烃类含量大幅降低，这样酸性气中的烃类含量就可以降得很低，以便制取优质的硫磺产品，同时也可以减少胺液发泡.冲塔现象的发生。"
+            },
+            {
+                question: "酸性水汽提塔干塔的现象，原因及处理方法是什么？",
+                answer: "现象：(1) 塔顶温度升高，塔底，塔内各点温差小，压力增大。(2) 塔底液面指示为0。(3) 重沸器返塔温度高，蒸汽量下降。原因：(1) 塔内液相物料不平衡，进料少，净化水排出量大。(2) 进料泵或进料调节阀故障，使进料不正常或不进料。处理方法：(1) 进料泵故障时，改走副线控制，用手阀操作。(2) 适当降低重沸器加热蒸汽量。(3) 控制好塔内温度.压力.液位。(4) 待处理正常后，调整各参数在规定的范围内。"
+            },
+            {
+                question: "溶剂发泡有什么迹象？如何预防溶剂发泡？",
+                answer: "迹象：(1) 吸收塔压力降增加(2) 吸收塔和再生塔液位波动大(3) 溶剂脏，颜色不透明。预防：(1) 控制再生温度≯130℃(2) 系统内不能补新鲜水，而采用除盐水或品质更好的除氧水(3) 溶剂缓冲罐要启用氮封(4) 桶装胺液的桶盖要盖紧(5) 加强三级过滤及反冲洗频次。"
+            },
+            {
+                question: "加氢反应器硫穿透现象及如何处理？",
+                answer: "现象：(1) 急冷塔填料层堵，压力升高。(2) 急冷水过滤器堵。(3) 急冷水PH值变低。处理：(1) 控制好气风比。(2) 适当增加氢气流量。(3) 更换急冷塔填料。(4) 清洗急冷水过滤器。"
+            },
+            {
+                question: "富液闪蒸塔压力高低的影响？",
+                answer: "闪蒸塔是为了闪蒸出富液中的烃，闪蒸塔压力高时，不利于烃的脱出，闪蒸塔压力越低，富液内的烃和硫化氢越容易被闪蒸出来，但是压力不能过低，压力过低后，溶剂也极可能随着烃挥发进入火炬系统。"
+            }
+        ],
+        essay: [
+            {
+                question: "酸性气带水为什么会影响的转化率?",
+                answer: "酸性气带水进炉后，影响炉子温度，使H2S的转化受影响，同时也降低了催化剂的活性，影响其寿命:由化学方程式2H2S+02→Sx+2H2O来看，过程气中水分含量高将会使化学平衡向左移动，影响了H2S的转化，降低转化率。"
+            },
+            {
+                question: "精贫液中H2S含量偏高的原因及调节方法？",
+                answer: "原因：(1) 再生塔底部温度偏低；(2) 再生塔压力偏高；(3) 再生塔气/液相负荷不合适；(4) 重沸器壳程液位过高；(5) 富液中CO2含量偏高；(6) 再生塔顶部温度过低。调节方法：(1) 提高再生塔蒸汽/溶剂比值；(2) 控制好再生塔压力；(3) 调整再生塔蒸汽/溶剂比值；(4) 从酸性水回流泵排出部分酸性水；(5) 加强再生塔溶剂再生操作，增加富溶剂中CO2的拔出量；(6) 适当降低吸收塔顶部回流量或提高富液入塔温度。"
+            },
+            {
+                question: "温度对尾气净化反应器里的反应有什么影响？",
+                answer: "尾气净化反应器里发生的主要是S02和S还原成H2S的反应以及COS.CS2水解反应。由于S02和S还原成H2S的反应是放热反应，温度越低对反应越有利，但是COS.CS2水解反应为吸热反应，温度高对反应有利，因此需要较高的反应温度。综合考虑，将反应器床层温度控制在300～350℃以满足生产要求。"
+            },
+            {
+                question: "克劳斯反器入口温度对装置有何影响？",
+                answer: "从反应炉来的过程气在反应器床层催化剂作用下使H2S与S02发生反应，该反应为放热反应，温度越低对反应越有利，但温度低于硫的露点温度会造成液硫析出而使催化剂失去活性，这样也会造成硫转化率的下降。另外要使装置得到高的硫转化率必须在催化剂作用下使COS和CS2发生水解，而该水解反应为吸热反应，温度越高对水解越有利。因此必须控制克劳斯反应器入口温度210-250℃，以确保装置获得高的硫转化率。"
+            },
+            {
+                question: "溶剂中MDEA浓度对尾气脱硫效果有何影响？",
+                answer: "尾气与溶剂在吸收塔内逆相接触时，溶剂中甲基二乙醇胺浓度越高，溶剂气相负荷就越低，尾气脱硫效果就越好，但是H2S的吸收附过程是放热反应，溶剂浓度越高，吸附过程放出热量也越多，溶剂的温度上升也越大。这样，反而使H2S吸附效果变差，因此溶剂的浓度不能太高也不能太低，溶剂的浓度一般由再生塔设计条件决定，本装置溶剂中MDEA重量浓度为30％左右。"
+            }
+        ]
+    };
+
+    // 应用状态
+    let currentQuestions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedType = '';
+    let userAnswers = [];
+
+    // DOM元素
+    const questionTypeBtns = document.querySelectorAll('.question-type-btn');
+    const questionContainer = document.getElementById('question-container');
+    const questionNumber = document.getElementById('question-number');
+    const questionType = document.getElementById('question-type');
+    const questionContent = document.getElementById('question-content');
+    const optionsContainer = document.getElementById('options');
+    const answerInputContainer = document.getElementById('answer-input-container');
+    const answerInput = document.getElementById('answer-input');
+    const prevBtn = document.getElementById('prev-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const result = document.getElementById('result');
+    const scoreContainer = document.getElementById('score-container');
+    const scoreElement = document.getElementById('score');
+    const totalElement = document.getElementById('total');
+    const progress = document.getElementById('progress');
+
+    // 题型按钮点击事件
+    questionTypeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            selectedType = btn.getAttribute('data-type');
+            startQuiz(selectedType);
+        });
+    });
+
+    // 开始答题
+    function startQuiz(type) {
+        currentQuestions = [...questionBank[type]];
+        currentQuestionIndex = 0;
+        score = 0;
+        userAnswers = [];
+
+        // 显示题目容器，隐藏题型选择
+        document.querySelector('.question-type-selector').style.display = 'none';
+        questionContainer.style.display = 'block';
+        scoreContainer.style.display = 'none';
+
+        // 更新进度条
+        updateProgress();
+
+        // 显示第一题
+        showQuestion();
+    }
+
+    // 显示题目
+    function showQuestion() {
+        const question = currentQuestions[currentQuestionIndex];
+
+        // 更新题目信息
+        questionNumber.textContent = `题目 ${currentQuestionIndex + 1}/${currentQuestions.length}`;
+
+        // 设置题型名称
+        const typeNames = {
+            'fill': '填空题',
+            'single': '单选题',
+            'multiple': '多选题',
+            'judge': '判断题',
+            'short': '简答题',
+            'essay': '论述题'
+        };
+        questionType.textContent = typeNames[selectedType];
+
+        // 设置题目内容
+        questionContent.textContent = question.question;
+
+        // 清除之前的结果
+        result.style.display = 'none';
+
+        // 根据题型设置界面
+        if (selectedType === 'fill' || selectedType === 'short' || selectedType === 'essay') {
+            // 填空题、简答题、论述题显示输入框
+            optionsContainer.innerHTML = '';
+            answerInputContainer.style.display = 'block';
+            answerInput.value = userAnswers[currentQuestionIndex] || '';
+            answerInput.focus();
+        } else {
+            // 选择题显示选项
+            answerInputContainer.style.display = 'none';
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+
+                // 多选题可以多选，其他题型只能单选
+                if (selectedType === 'multiple') {
+                    optionElement.addEventListener('click', () => {
+                        if (optionElement.classList.contains('selected')) {
+                            optionElement.classList.remove('selected');
+                        } else {
+                            optionElement.classList.add('selected');
+                        }
+                    });
+                } else {
+                    optionElement.addEventListener('click', () => {
+                        // 先清除所有选项的选中状态
+                        document.querySelectorAll('.option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        // 选中当前选项
+                        optionElement.classList.add('selected');
+                    });
+                }
+
+                optionsContainer.appendChild(optionElement);
+            });
+
+            // 恢复之前的选择
+            if (userAnswers[currentQuestionIndex]) {
+                if (selectedType === 'multiple') {
+                    // 多选题
+                    const selectedOptions = userAnswers[currentQuestionIndex].split(',');
+                    document.querySelectorAll('.option').forEach((option, index) => {
+                        const optionLetter = String.fromCharCode(65 + index); // A, B, C, D...
+                        if (selectedOptions.includes(optionLetter)) {
+                            option.classList.add('selected');
+                        }
+                    });
+                } else {
+                    // 单选题或判断题
+                    document.querySelectorAll('.option').forEach((option, index) => {
+                        const optionLetter = String.fromCharCode(65 + index); // A, B, C, D...
+                        if (userAnswers[currentQuestionIndex] === optionLetter) {
+                            option.classList.add('selected');
+                        }
+                    });
+                }
+            }
+        }
+
+        // 更新按钮状态
+        prevBtn.disabled = currentQuestionIndex === 0;
+        submitBtn.style.display = 'block';
+        nextBtn.style.display = 'none';
+    }
+
+    // 提交答案
+    submitBtn.addEventListener('click', () => {
+        const question = currentQuestions[currentQuestionIndex];
+        let userAnswer = '';
+        let isCorrect = false;
+
+        if (selectedType === 'fill' || selectedType === 'short' || selectedType === 'essay') {
+            // 填空题、简答题、论述题
+            userAnswer = answerInput.value.trim();
+            isCorrect = userAnswer === question.answer;
+        } else if (selectedType === 'multiple') {
+            // 多选题
+            const selectedOptions = Array.from(document.querySelectorAll('.option.selected'))
+                .map(option => {
+                    const optionText = option.textContent;
+                    return optionText.substring(0, optionText.indexOf('.'));
+                })
+                .sort()
+                .join(',');
+            userAnswer = selectedOptions;
+            isCorrect = userAnswer === question.answer.join(',');
+        } else {
+            // 单选题或判断题
+            const selectedOption = document.querySelector('.option.selected');
+            if (selectedOption) {
+                const optionText = selectedOption.textContent;
+                userAnswer = optionText.substring(0, optionText.indexOf('.'));
+                isCorrect = userAnswer === question.answer;
+            } else {
+                alert('请选择一个答案');
+                return;
+            }
+        }
+
+        // 保存用户答案
+        userAnswers[currentQuestionIndex] = userAnswer;
+
+        // 显示结果
+        result.style.display = 'block';
+        if (isCorrect) {
+            result.className = 'result correct';
+            result.textContent = '回答正确！';
+            score++;
+        } else {
+            result.className = 'result incorrect';
+            let correctAnswer = '';
+
+            if (selectedType === 'fill' || selectedType === 'short' || selectedType === 'essay') {
+                correctAnswer = question.answer;
+            } else if (selectedType === 'multiple') {
+                correctAnswer = question.answer.join(', ');
+            } else {
+                correctAnswer = question.answer;
+            }
+
+            result.innerHTML = `回答错误！<br>正确答案：${correctAnswer}`;
+        }
+
+        // 更新按钮
+        submitBtn.style.display = 'none';
+        nextBtn.style.display = 'block';
+
+        // 如果是最后一题，显示得分
+        if (currentQuestionIndex === currentQuestions.length - 1) {
+            nextBtn.textContent = '查看得分';
+        }
+    });
+
+    // 下一题
+    nextBtn.addEventListener('click', () => {
+        if (currentQuestionIndex < currentQuestions.length - 1) {
+            currentQuestionIndex++;
+            showQuestion();
+            updateProgress();
+        } else {
+            // 显示得分
+            showScore();
+        }
+    });
+
+    // 上一题
+    prevBtn.addEventListener('click', () => {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            showQuestion();
+            updateProgress();
+        }
+    });
+
+    // 更新进度条
+    function updateProgress() {
+        const progressPercent = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
+        progress.style.width = `${progressPercent}%`;
+    }
+
+    // 显示得分
+    function showScore() {
+        questionContainer.style.display = 'none';
+        scoreContainer.style.display = 'block';
+        scoreElement.textContent = score;
+        totalElement.textContent = currentQuestions.length;
+    }
+</script>
+</body>
+</html>
